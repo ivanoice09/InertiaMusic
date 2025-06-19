@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, usePage } from '@inertiajs/react';
+import SearchBar from '../Components/SearchBar';
 
 export default function Navbar() {
     const { url } = usePage()
@@ -18,6 +19,11 @@ export default function Navbar() {
                             Home
                         </Link>
                     </div>
+
+                    <div className="flex items-center flex-1 justify-center">
+                        <SearchBar />
+                    </div>
+
                     <div className="flex items-center">
                         <Link 
                             href="/profile" 

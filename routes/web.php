@@ -7,6 +7,8 @@ use App\Http\Controllers\MusicController;
 // Home page
 Route::get('/', [MusicController::class, 'index'])->name('music.index');
 
+Route::get('/search', [MusicController::class, 'search']);
+
 // Profile page
 Route::get('/profile', function () {
     return Inertia::render('Profile');

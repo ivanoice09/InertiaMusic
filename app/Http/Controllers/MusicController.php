@@ -33,6 +33,32 @@ class MusicController extends Controller
         return [];
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('q', '');
+
+        $url = 'https://api.jamendo.com/v3.0/tracks/';
+        $clientId = config('services.jamendo.client_id');
+
+        $response = Http::get($url, [
+            'client_id' => $clientId,
+            'format' => 'json',
+            'limit' => 10,
+            'search' => $query,
+        ]);
+
+        $songs = [];
+        if ($response->successful()) {
+            $data = $response->json();
+            $songs = $data['results'] ?? [];
+        }
+
+        return Inertia::render('Search', [
+            'q' => $query,
+            'songs' => $songs,
+        ]);
+    }
+
     public function index()
     {
         $songs = $this->getPopularSongs();
