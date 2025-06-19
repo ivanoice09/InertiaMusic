@@ -1,0 +1,166 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+.music-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.music-title {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #2d3748;
+}
+
+.song-list {
+    list-style: none;
+    padding: 0;
+}
+
+.song-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    background: #f7fafc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.song-item:hover {
+    background: #edf2f7;
+    transform: translateY(-2px);
+}
+
+.song-item.active {
+    background: #ebf8ff;
+    border-left: 4px solid #4299e1;
+}
+
+.song-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+.song-info h3 {
+    margin: 0;
+    color: #2d3748;
+    font-size: 16px;
+}
+
+.song-info p {
+    margin: 5px 0 0;
+    color: #718096;
+    font-size: 14px;
+}
+
+/* ===================== */
+/* Persistent player bar */
+/* ===================== */
+.player-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #2d3748;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 1000;
+}
+
+.now-playing {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.audio-player {
+    flex: 2;
+    max-width: 500px;
+}
+
+/* Ensure content doesn't hide behind player */
+.min-h-screen {
+    min-height: calc(100vh - 60px); /* Adjust based on player bar height */
+}
+
+/* ============= */
+/* Navbar styles */
+/* ============= */
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.shadow-sm {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Link hover effects */
+.hover\:text-gray-600:hover {
+    color: #718096;
+}
+
+/* Layout spacing */
+.min-h-screen {
+    min-height: 100vh;
+}
+
+.bg-gray-50 {
+    background-color: #f9fafb;
+}
+
+.bg-white {
+    background-color: #ffffff;
+}
+
+/* Padding for main content when navbar is fixed */
+.pb-16 {
+    padding-bottom: 4rem;
+}
+
+/* ================== */
+/* Active link styles */
+/* ================== */
+.bg-gray-100 {
+    background-color: #f7fafc;
+}
+
+.text-gray-900 {
+    color: #1a202c;
+}
+
+.text-gray-600 {
+    color: #718096;
+}
+
+.hover\:text-gray-900:hover {
+    color: #1a202c;
+}
+
+/* Smooth transitions */
+.transition {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
