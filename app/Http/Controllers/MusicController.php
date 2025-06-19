@@ -37,26 +37,42 @@ class MusicController extends Controller
     {
         $query = $request->input('q', '');
 
+        // Return null for songs when it's the initial load without a query
+        if ($query === '') {
+            return Inertia::render('Search', [
+                'q' => '',
+                'songs' => null,
+            ]);
+        }
+
         $url = 'https://api.jamendo.com/v3.0/tracks/';
         $clientId = config('services.jamendo.client_id');
 
-        $response = Http::get($url, [
-            'client_id' => $clientId,
-            'format' => 'json',
-            'limit' => 10,
-            'search' => $query,
-        ]);
+        try {
+            $response = Http::get($url, [
+                'client_id' => $clientId,
+                'format' => 'json',
+                'limit' => 10,
+                'search' => $query,
+            ]);
 
-        $songs = [];
-        if ($response->successful()) {
-            $data = $response->json();
-            $songs = $data['results'] ?? [];
+            $songs = [];
+            if ($response->successful()) {
+                $data = $response->json();
+                $songs = $data['results'] ?? [];
+            }
+
+            return Inertia::render('Search', [
+                'q' => $query,
+                'songs' => $songs,
+            ]);
+        } catch (\Exception $e) {
+            return Inertia::render('Search', [
+                'q' => $query,
+                'songs' => [],
+                'error' => 'Failed to fetch search results. Please try again later.',
+            ]);
         }
-
-        return Inertia::render('Search', [
-            'q' => $query,
-            'songs' => $songs,
-        ]);
     }
 
     public function index()
