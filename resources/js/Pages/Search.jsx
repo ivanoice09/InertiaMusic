@@ -1,6 +1,5 @@
 import { Head } from '@inertiajs/react';
 import { usePlayer } from '../Contexts/PlayerContext';
-import { motion, AnimatePresence } from 'framer-motion';
 import useRecentSearches from '../hooks/useRecentSearches';
 
 export default function Search({ q, songs, }) {

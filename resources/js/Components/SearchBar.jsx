@@ -1,13 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import RecentSearches from './RecentSearches';
+import useRecentSearches from '../hooks/useRecentSearches';
 
 export default function SearchBar() {
+    const { url } = usePage();
     const [query, setQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
-    const [isSearching, setIsSearching] = useState(false);
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const { addRecentSearch } = useRecentSearches();
 
+    // Clear search when navigating away
+    useEffect(() => {
+        const unsub = router.on('navigate', () => {
+            setQuery('');
+            setDebouncedQuery('');
+            setShowSuggestions(false);
+        });
+
+        return () => unsub();
+    }, []);
+
+    // Debounce the search query
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedQuery(query);
@@ -18,19 +32,27 @@ export default function SearchBar() {
 
     useEffect(() => {
         if (debouncedQuery.length >= 2) {
-            setIsSearching(true); // Save the search query
+            addRecentSearch(debouncedQuery);
             router.get('/search', { q: debouncedQuery }, {
                 preserveState: true,
                 replace: true,
-                onFinish: () => setIsSearching(false),
+            });
+        } else if (debouncedQuery.length === 0 && url !== '/') {
+            // Only navigate home if we're not already there
+            router.visit('/', {}, {
+                preserveScoll: true,
+                replace: true
             });
         }
-    }, [debouncedQuery]);
+    }, [debouncedQuery, url]);
 
     const clearSearch = () => {
         setQuery('');
         setDebouncedQuery('');
         setShowSuggestions(false);
+        if (url !== '/') {
+            router.visit('/');
+        }
     };
 
     return (
@@ -48,7 +70,8 @@ export default function SearchBar() {
                 {query && (
                     <button
                         onClick={clearSearch}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600" 
+                        aria-label="Clear search"
                     >
                         ×
                     </button>
