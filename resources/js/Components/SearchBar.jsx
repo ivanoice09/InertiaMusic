@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
 import RecentSearches from './RecentSearches';
+import useRecentSearches from '../hooks/useRecentSearches';
 
 export default function SearchBar() {
     const [query, setQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
     const [isSearching, setIsSearching] = useState(false);
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const { addRecentSearch } = useRecentSearches();
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -17,15 +19,13 @@ export default function SearchBar() {
     }, [query]);
 
     useEffect(() => {
-        if (debouncedQuery.length >= 0) {
+        if (debouncedQuery.length >= 2) {
+            setIsSearching(true); // Save the search query
             router.get('/search', { q: debouncedQuery }, {
                 preserveState: true,
                 replace: true,
                 onFinish: () => setIsSearching(false),
             });
-        } else if (debouncedQuery.length === 0) {
-            // Optional: Clear search results when query is empty
-            // router.get('/');
         }
     }, [debouncedQuery]);
 
@@ -36,12 +36,12 @@ export default function SearchBar() {
     };
 
     return (
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md relative">
             <div className="relative">
                 <input
                     type="text"
                     placeholder="Search songs..."
-                    className="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onFocus={() => setShowSuggestions(true)}
@@ -63,16 +63,16 @@ export default function SearchBar() {
                         </svg>
                     </div>
                 )}
-                <RecentSearches
-                    show={showSuggestions}
-                    query={query}
-                    onSelect={(searchTerm) => {
-                        setQuery(searchTerm);
-                        setDebouncedQuery(searchTerm);
-                        setShowSuggestions(false);
-                    }}
-                />
             </div>
+            <RecentSearches
+                show={showSuggestions}
+                query={query}
+                onSelect={(searchTerm) => {
+                    setQuery(searchTerm);
+                    setDebouncedQuery(searchTerm);
+                    setShowSuggestions(false);
+                }}
+            />
         </div>
     );
 }
